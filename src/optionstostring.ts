@@ -63,7 +63,7 @@ export function optionsToString (options: Partial<Options>) {
         break
 
       case 'UNTIL':
-        outValue = dateutil.timeToUntilString(value, !options.tzid)
+        outValue = dateutil.timeToUntilString(value, true)
         break
 
       default:
