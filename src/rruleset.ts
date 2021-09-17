@@ -6,6 +6,7 @@ import { iterSet } from './iterset'
 import { QueryMethodTypes, IterResultType } from './types'
 import { rrulestr } from './rrulestr'
 import { optionsToString } from './optionstostring'
+import CallbackIterResult from './callbackiterresult'
 
 function createGetterSetter <T> (fieldName: string) {
   return (field?: T) => {
@@ -193,6 +194,41 @@ export default class RRuleSet extends RRule {
 
     return rrs
   }
+
+  /**
+   * Returns all the occurrences of the rrule between after and before, returning a maximum of limit.
+   * The inc keyword defines what happens if after and/or before are
+   * themselves occurrences. With inc == True, they will be included in the
+   * list, if they are found in the recurrence set.
+   * @return Array
+   */
+  betweenWithLimit (after: Date, before: Date, inc: boolean, limit: number): Date[] {
+
+    if (this._rrule.length > 1 || this._rdate.length > 1 || this._exrule.length > 1) {
+      return this.between(after, before, inc).slice(0, limit)
+    }
+
+    if (inc === void 0) { inc = false }
+
+    if (!dateutil.isValidDate(after) || !dateutil.isValidDate(before)) {
+      throw new Error('Invalid date passed in to RRule.betweenWithLimit')
+    }
+
+    const args = { before, after, inc, limit }
+
+    let result = this._cacheGet('between', args)
+
+    if (!result) {
+      result = this._iter(new CallbackIterResult('between', args, (d, i) => {
+        return i < limit
+      }))
+      this._cacheAdd('between', result, args)
+    }
+
+    return result as Date[]
+
+  }
+
 }
 
 function _addRule (rrule: RRule, collection: RRule[]) {

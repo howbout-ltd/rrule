@@ -163,6 +163,40 @@ export const testRecurring = function (
           expectedDates.slice(1, expectedDates.length - 1),
           'between, inc=false'
         )
+
+        assertDatesEqual(
+          rule.betweenWithLimit(
+            expectedDates[0],
+            expectedDates[expectedDates.length - 1],
+            false,
+            1
+          ),
+          expectedDates[1],
+          'betweenWithLimit, inc=false'
+        )
+
+        assertDatesEqual(
+          rule.betweenWithLimit(
+            expectedDates[0],
+            expectedDates[expectedDates.length - 1],
+            true,
+            Number.MAX_VALUE
+          ),
+          expectedDates,
+          'betweenWithLimit, inc=true'
+        )
+
+        assertDatesEqual(
+          rule.betweenWithLimit(
+            expectedDates[0],
+            expectedDates[expectedDates.length - 1],
+            true,
+            2
+          ),
+          expectedDates.slice(0, 2),
+          'betweenWithLimit, inc=true'
+        )
+
       }
 
       if (expectedDates.length > 1) {

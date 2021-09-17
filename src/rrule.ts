@@ -120,7 +120,7 @@ export default class RRule implements QueryMethods {
     return iter(iterResult, this.options)
   }
 
-  private _cacheGet (what: CacheKeys | 'all', args?: Partial<IterArgs>) {
+  public _cacheGet (what: CacheKeys | 'all', args?: Partial<IterArgs>) {
     if (!this._cache) return false
     return this._cache._cacheGet(what, args)
   }
@@ -185,6 +185,36 @@ export default class RRule implements QueryMethods {
       this._cacheAdd('between', result, args)
     }
     return result as Date[]
+  }
+
+  /**
+   * Returns all the occurrences of the rrule between after and before, returning a maximum of limit.
+   * The inc keyword defines what happens if after and/or before are
+   * themselves occurrences. With inc == True, they will be included in the
+   * list, if they are found in the recurrence set.
+   * @return Array
+   */
+  betweenWithLimit (after: Date, before: Date, inc: boolean, limit: number): Date[] {
+
+    if (inc === void 0) { inc = false }
+
+    if (!dateutil.isValidDate(after) || !dateutil.isValidDate(before)) {
+      throw new Error('Invalid date passed in to RRule.betweenWithLimit')
+    }
+
+    const args = { before, after, inc, limit }
+
+    let result = this._cacheGet('between', args)
+
+    if (!result) {
+      result = this._iter(new CallbackIterResult('between', args, (d, i) => {
+        return i < limit
+      }))
+      this._cacheAdd('between', result, args)
+    }
+
+    return result as Date[]
+
   }
 
   /**
