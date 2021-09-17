@@ -120,13 +120,13 @@ export default class RRule implements QueryMethods {
     return iter(iterResult, this.options)
   }
 
-  public _cacheGet (what: CacheKeys | 'all', args?: Partial<IterArgs>) {
+  public _cacheGet (what: CacheKeys, args?: Partial<IterArgs>) {
     if (!this._cache) return false
     return this._cache._cacheGet(what, args)
   }
 
   public _cacheAdd (
-    what: CacheKeys | 'all',
+    what: CacheKeys,
     value: Date[] | Date | null,
     args?: Partial<IterArgs>
   ) {
@@ -249,6 +249,40 @@ export default class RRule implements QueryMethods {
       this._cacheAdd('after', result, args)
     }
     return result as Date
+  }
+
+  allBefore (dt: Date, inc = false, limit = Number.MAX_VALUE): Date[] {
+
+    const args = { dt, inc, limit }
+
+    let result = this._cacheGet('allBefore', args) as Date[] | false
+
+    if (result === false) {
+      result = this._iter(new CallbackIterResult('all', {}, (d, i) => {
+        return (d.getTime() < dt.getTime() || (inc && d.getTime() <= dt.getTime())) && i < limit
+      }))
+      this._cacheAdd('allBefore', result, args)
+    }
+
+    return result
+
+  }
+
+  allAfter (dt: Date, inc = false, limit = Number.MAX_VALUE): Date[] {
+
+    const args = { dt, inc, limit }
+
+    let result = this._cacheGet('allAfter', args) as Date[] | false
+
+    if (result === false) {
+      result = this._iter(new CallbackIterResult('all', {}, (d, i) => {
+        return (d.getTime() > dt.getTime() || (inc && d.getTime() >= dt.getTime())) && i < limit
+      }))
+      this._cacheAdd('allAfter', result, args)
+    }
+
+    return result
+
   }
 
   /**

@@ -2,13 +2,15 @@ import IterResult, { IterArgs } from './iterresult'
 import dateutil from './dateutil'
 import { isArray } from './helpers'
 
-export type CacheKeys = 'before' | 'after' | 'between'
+export type CacheKeys = 'before' | 'after' | 'between' | 'all' | 'allBefore' | 'allAfter'
 
 export class Cache {
   all: Date[] | Partial<IterArgs> | false = false
   before: IterArgs[] = []
   after: IterArgs[] = []
   between: IterArgs[] = []
+  allBefore: IterArgs[] = []
+  allAfter: IterArgs[] = []
 
   /**
    * @param {String} what - all/before/after/between
@@ -16,7 +18,7 @@ export class Cache {
    * @param {Object?} args - _iter arguments
    */
   public _cacheAdd (
-    what: CacheKeys | 'all',
+    what: CacheKeys,
     value: Date[] | Date | null,
     args?: Partial<IterArgs>
   ) {
@@ -43,7 +45,7 @@ export class Cache {
    *         [Date1, DateN] - cached (all/between)
    */
   public _cacheGet (
-    what: CacheKeys | 'all',
+    what: CacheKeys,
     args?: Partial<IterArgs>
   ): Date | Date[] | false | null {
     let cached: Date | Date[] | false | null = false
