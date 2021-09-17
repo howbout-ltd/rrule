@@ -5,6 +5,8 @@ export interface QueryMethods {
   between (after: Date, before: Date, inc: boolean): Date[]
   before (date: Date, inc: boolean): Date
   after (date: Date, inc: boolean): Date
+  allBefore (date: Date, inc: boolean): Date[]
+  allAfter (date: Date, inc: boolean): Date[]
 }
 
 export type QueryMethodTypes = keyof QueryMethods
