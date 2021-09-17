@@ -530,7 +530,7 @@ describe('RRuleSet', function () {
 
       set.rdate(
         DateTime.fromISO('20020301T090000').toJSDate(),
-      )     
+      )
 
       expect(set.all()).to.deep.equal([
         expectedDate(DateTime.fromISO('20000101T090000'), currentLocalDate, targetZone),
@@ -649,7 +649,7 @@ describe('RRuleSet', function () {
 
       expectRecurrence([original, legacy]).toBeUpdatedWithEndDate([
         'DTSTART;TZID=America/New_York:20171201T080000',
-        'RRULE:FREQ=WEEKLY;UNTIL=20171224T235959',
+        'RRULE:FREQ=WEEKLY;UNTIL=20171224T235959Z',
       ].join('\n'))
     })
 
@@ -755,7 +755,7 @@ describe('RRuleSet', function () {
 
       expect(set.rrules().map(e => e.toString())).eql([rrule.toString()]);
     });
-    
+
     it('exrules()', () => {
       let set = new RRuleSet();
       let rrule = new RRule({
@@ -773,7 +773,7 @@ describe('RRuleSet', function () {
       let set = new RRuleSet();
       let dt = parse('19610201T090000');
       set.rdate(dt);
-      
+
       expect(set.rdates()).eql([dt]);
     });
 
