@@ -33,9 +33,9 @@ export default class IterResult<M extends QueryMethodTypes> {
         ? args.before!
         : new Date(args.before!.getTime() - 1)
       this.minDate = args.inc ? args.after! : new Date(args.after!.getTime() + 1)
-    } else if (method === 'before') {
+    } else if (method === 'before' || method === 'allBefore') {
       this.maxDate = args.inc ? args.dt! : new Date(args.dt!.getTime() - 1)
-    } else if (method === 'after') {
+    } else if (method === 'after' || method === 'allAfter') {
       this.minDate = args.inc ? args.dt! : new Date(args.dt!.getTime() + 1)
     }
   }
@@ -56,12 +56,22 @@ export default class IterResult<M extends QueryMethodTypes> {
     if (this.method === 'between') {
       if (tooEarly) return true
       if (tooLate) return false
+      // If a 'limit' argument is provided, limit the number of returned dates
+      if (this.args.limit && this._result.length >= this.args.limit) return false
     } else if (this.method === 'before') {
       if (tooLate) return false
     } else if (this.method === 'after') {
       if (tooEarly) return true
       this.add(date)
       return false
+    } else if (this.method === 'allBefore') {
+      if (tooLate) return false
+      // If a 'limit' argument is provided, limit the number of returned dates
+      if (this.args.limit && this._result.length >= this.args.limit) return false
+    } else if (this.method === 'allAfter') {
+      if (tooEarly) return true
+      // If a 'limit' argument is provided, limit the number of returned dates
+      if (this.args.limit && this._result.length >= this.args.limit) return false
     }
 
     return this.add(date)
@@ -87,6 +97,8 @@ export default class IterResult<M extends QueryMethodTypes> {
     switch (this.method) {
       case 'all':
       case 'between':
+      case 'allBefore':
+      case 'allAfter':
         return res as IterResultType<M>
       case 'before':
       case 'after':

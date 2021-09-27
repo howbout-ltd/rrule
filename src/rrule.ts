@@ -207,9 +207,7 @@ export default class RRule implements QueryMethods {
     let result = this._cacheGet('between', args)
 
     if (!result) {
-      result = this._iter(new CallbackIterResult('between', args, (d, i) => {
-        return i < limit
-      }))
+      result = this._iter(new IterResult('between', args))
       this._cacheAdd('between', result, args)
     }
 
@@ -258,9 +256,7 @@ export default class RRule implements QueryMethods {
     let result = this._cacheGet('allBefore', args) as Date[] | false
 
     if (result === false) {
-      result = this._iter(new CallbackIterResult('all', {}, (d, i) => {
-        return (d.getTime() < dt.getTime() || (inc && d.getTime() <= dt.getTime())) && i < limit
-      }))
+      result = this._iter(new IterResult('allBefore', args))
       this._cacheAdd('allBefore', result, args)
     }
 
@@ -275,9 +271,7 @@ export default class RRule implements QueryMethods {
     let result = this._cacheGet('allAfter', args) as Date[] | false
 
     if (result === false) {
-      result = this._iter(new CallbackIterResult('all', {}, (d, i) => {
-        return (d.getTime() > dt.getTime() || (inc && d.getTime() >= dt.getTime())) && i < limit
-      }))
+      result = this._iter(new IterResult('allAfter', args))
       this._cacheAdd('allAfter', result, args)
     }
 

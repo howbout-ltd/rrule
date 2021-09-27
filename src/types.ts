@@ -3,14 +3,15 @@ import { Weekday, WeekdayStr } from './weekday'
 export interface QueryMethods {
   all (): Date[]
   between (after: Date, before: Date, inc: boolean): Date[]
+  betweenWithLimit (after: Date, before: Date, inc: boolean, limit: number): Date[]
   before (date: Date, inc: boolean): Date
   after (date: Date, inc: boolean): Date
   allBefore (date: Date, inc: boolean): Date[]
   allAfter (date: Date, inc: boolean): Date[]
 }
 
-export type QueryMethodTypes = keyof QueryMethods
-export type IterResultType<M extends QueryMethodTypes> = M extends 'all' | 'between' ? Date[] : (Date | null)
+export type QueryMethodTypes = keyof Omit<QueryMethods, 'betweenWithLimit'>
+export type IterResultType<M extends QueryMethodTypes> = M extends 'all' | 'between' | 'allBefore' | 'allAfter' ? Date[] : (Date | null)
 
 export enum Frequency {
   YEARLY = 0,
