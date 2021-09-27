@@ -68,6 +68,8 @@ export function iterSet <M extends QueryMethodTypes> (
   switch (iterResult.method) {
     case 'all':
     case 'between':
+    case 'allBefore':
+    case 'allAfter':
       return res as IterResultType<M>
     case 'before':
       return ((res.length && res[res.length - 1]) || null) as IterResultType<M>

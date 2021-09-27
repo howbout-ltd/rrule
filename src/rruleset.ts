@@ -219,9 +219,7 @@ export default class RRuleSet extends RRule {
     let result = this._cacheGet('between', args)
 
     if (!result) {
-      result = this._iter(new CallbackIterResult('between', args, (d, i) => {
-        return i < limit
-      }))
+      result = this._iter(new IterResult('between', args))
       this._cacheAdd('between', result, args)
     }
 
