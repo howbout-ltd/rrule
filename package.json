@@ -26,7 +26,7 @@
   },
   "scripts": {
     "prepare": "npm run build",
-    "build": "tsc && webpack && tsc dist/esm/**/*.d.ts",
+    "build": "tsc && webpack",
     "lint": "yarn tslint --project . --fix --config tslint.json",
     "test": "TS_NODE_PROJECT=tsconfig.test.json mocha **/*.test.ts",
     "test-ci": "TS_NODE_PROJECT=tsconfig.test.json nyc mocha **/*.test.ts"
